@@ -52,8 +52,8 @@ The application will start on [http://localhost:3000](http://localhost:3000).
 Create a `.env.local` file in the root of the frontend directory with the following:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8000/api
-NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=https://Sufyanofficial-todo-full-stack-backend.hf.space/api
+NEXT_PUBLIC_BETTER_AUTH_URL=https://Sufyanofficial-todo-full-stack-backend.hf.space
 BETTER_AUTH_SECRET=your-secret-key
 ```
 

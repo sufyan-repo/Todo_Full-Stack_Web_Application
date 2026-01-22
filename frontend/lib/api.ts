@@ -1,6 +1,6 @@
 import { Todo, CreateTodoRequest, UpdateTodoRequest } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 // Base API client with JWT handling
 class ApiClient {
@@ -96,7 +96,7 @@ class ApiClient {
 
   // Auth methods
   async signIn(email: string, password: string): Promise<{ user: any; token: string }> {
-    const response = await fetch(`${this.baseUrl}/auth/sign-in`, {
+    const response = await fetch(`${this.baseUrl}/api/auth/sign-in`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ class ApiClient {
   }
 
   async signUp(email: string, password: string, name: string): Promise<{ user: any; token: string }> {
-    const response = await fetch(`${this.baseUrl}/auth/sign-up`, {
+    const response = await fetch(`${this.baseUrl}/api/auth/sign-up`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ class ApiClient {
 
     // Call the backend logout endpoint if needed
     try {
-      await this.request('/auth/logout', { method: 'POST' });
+      await this.request('/api/auth/logout', { method: 'POST' });
     } catch (error) {
       // Even if the backend call fails, we still clear the local token
       console.error('Sign out error:', error);
@@ -173,12 +173,12 @@ class ApiClient {
 
   // Todo methods
   async getTodos(): Promise<Todo[]> {
-    const todos = await this.request<any[]>('/tasks/');
+    const todos = await this.request<any[]>('/api/tasks/');
     return todos.map(this.mapTaskToTodo);
   }
 
   async createTodo(todoData: CreateTodoRequest): Promise<Todo> {
-    const task = await this.request<any>('/tasks/', {
+    const task = await this.request<any>('/api/tasks/', {
       method: 'POST',
       body: JSON.stringify(todoData),
     });
@@ -186,7 +186,7 @@ class ApiClient {
   }
 
   async updateTodo(id: number, todoData: UpdateTodoRequest): Promise<Todo> {
-    const task = await this.request<any>(`/tasks/${id}`, {
+    const task = await this.request<any>(`/api/tasks/${id}`, {
       method: 'PUT',
       body: JSON.stringify(todoData),
     });
@@ -194,13 +194,13 @@ class ApiClient {
   }
 
   async deleteTodo(id: number): Promise<void> {
-    await this.request(`/tasks/${id}`, {
+    await this.request(`/api/tasks/${id}`, {
       method: 'DELETE',
     });
   }
 
   async toggleTodoComplete(id: number, completed: boolean): Promise<Todo> {
-    const task = await this.request<any>(`/tasks/${id}/complete`, {
+    const task = await this.request<any>(`/api/tasks/${id}/complete`, {
       method: 'PATCH',
       body: JSON.stringify({ completed }),
     });
