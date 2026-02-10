@@ -36,6 +36,10 @@ export const isTokenExpired = (token: string): boolean => {
 
 // Check if user is authenticated
 export const isAuthenticated = (): boolean => {
+  if (typeof window === 'undefined') {
+    return false; // Not running in browser, so not authenticated
+  }
+  
   const token = getToken();
   return token !== null && !isTokenExpired(token);
 };

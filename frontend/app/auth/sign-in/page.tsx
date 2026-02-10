@@ -17,6 +17,23 @@ export default function SignInPage() {
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
+  React.useEffect(() => {
+    // Check if user is already authenticated
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (payload.exp >= currentTime) {
+          // Token is valid, redirect to dashboard
+          router.replace('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error checking token expiration:', error);
+      }
+    }
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -34,9 +51,19 @@ export default function SignInPage() {
     setLoading(true);
 
     try {
-      await signIn(email, password);
+      const result = await signIn(email, password);
+      
+      // Only store token after successful login
+      if (result && result.token) {
+        localStorage.setItem('token', result.token);
+        if (result.user?.full_name) {
+          localStorage.setItem('user_name', result.user.full_name);
+        } else if (result.user?.name) {
+          localStorage.setItem('user_name', result.user.name);
+        }
+      }
+      
       router.push('/dashboard');
-      router.refresh();
     } catch (err: any) {
       setError(err.message || 'Sign in failed. Please try again.');
     } finally {

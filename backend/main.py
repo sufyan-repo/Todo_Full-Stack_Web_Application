@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import traceback
 from fastapi.middleware.cors import CORSMiddleware
-from .core.config import settings
-from .api import tasks, auth
+from core.config import settings
+from api import tasks, auth
 
 from contextlib import asynccontextmanager
 from sqlmodel import SQLModel

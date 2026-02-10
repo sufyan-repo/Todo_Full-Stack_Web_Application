@@ -1,159 +1,151 @@
-<!--
-Sync Impact Report:
-Version change: 1.0.0 → 2.0.0
-Modified principles: All principles completely redefined for Phase II
-Added sections: Project Overview, Core Requirements, Authentication & Security, Non-Functional Requirements, Technology Stack and Tools, Development Workflow, Monorepo Structure, Guiding Principles, Deliverables and Success Criteria
-Removed sections: Original template placeholders
-Templates requiring updates: ✅ Updated
-Follow-up TODOs: None
--->
-
-# Full-Stack Web Application for The Evolution of Todo - Phase II Constitution
-
-## Project Overview
-
-This constitution governs the evolution of a single-user console-based todo application to a modern multi-user full-stack web application with persistent storage. The application transitions from an in-memory console app to a secure, authenticated web platform with Neon PostgreSQL persistence, supporting multiple concurrent users with proper data isolation.
-
-The primary focus is on implementing the 5 core task features (Add, Delete, Update, View, Mark Complete) in a web context with robust authentication and user isolation. This document serves as the foundational governance for Phase II, defining high-level goals, requirements, security model, technology stack, monorepo structure, and strict agentic development rules.
+# Phase 3 Constitution: AI-Powered Todo Assistant Extension
 
 ## Core Principles
 
-### I. Spec-First Development
-All features must be fully specified before implementation begins. Specifications must include user stories, acceptance criteria, API contracts, database schemas, and UI mockups. No implementation work proceeds without approved specifications in the `specs/` directory.
+### 1. Immutable Foundation
+- Phase 2 (Todo Full Stack) remains completely immutable
+- All Phase 3 functionality extends Phase 2 without modification
+- Backwards compatibility with Phase 2 APIs and UI is mandatory
 
-### II. Security by Design
-All features must implement user authentication and data isolation from the ground up. Every API endpoint must enforce user ownership validation. No feature is considered complete without proper security measures in place, including JWT-based authentication and user-specific data access controls.
+### 2. AI-Native Architecture
+- Intelligence layer sits as a service abstraction over Phase 2
+- Natural language processing for todo management
+- Context-aware suggestions and automation
+- Machine learning-powered insights and recommendations
 
-### III. Test-First Implementation (NON-NEGOTIABLE)
-All code must be developed following TDD practices: tests written → specifications approved → tests fail → then implement. Both unit and integration tests are required for all features. The application must maintain a minimum 80% code coverage threshold.
+### 3. Stateless Design
+- All services maintain zero local state
+- Session state stored in external cache (Redis)
+- Horizontal scalability without shared memory constraints
+- Event-driven architecture with message queues
 
-### IV. Full-Stack Integration
-All features must be implemented with both frontend and backend components working together. Each feature must be testable through both the UI and API layers. No backend-only or frontend-only implementations are acceptable without explicit UI or API specifications.
+### 4. MCP-Based Tooling
+- All development tools accessed via Model Context Protocol
+- Standardized interfaces for AI agent collaboration
+- Tool orchestration through MCP-compliant adapters
+- Centralized logging and observability via MCP
 
-### V. Agentic Development Compliance
-All implementation must be performed exclusively through Claude Code agents and Spec-Kit Plus tools. Manual coding outside of agent guidance is strictly prohibited. All changes must be traceable through Prompt History Records (PHRs).
+## Technical Architecture
 
-### VI. API-First Design
-
-All backend functionality must be exposed through well-defined RESTful API endpoints before frontend implementation. API contracts must be documented and versioned appropriately. Frontend development must consume these APIs exclusively.
-
-## Authentication & Security
-
-The application implements JWT-based authentication using Better Auth for the Next.js frontend, with tokens verified by FastAPI middleware on the backend. A shared BETTER_AUTH_SECRET ensures secure token validation across services. All operations enforce user isolation, ensuring users can only access their own data.
-
-Authentication requirements:
-- All API endpoints (except authentication endpoints) require valid JWT tokens
-- User ID is extracted from JWT and used for data access validation
-- All database queries must include user_id filters for proper isolation
-- Session management handled through Better Auth with secure token storage
-
-## Non-Functional Requirements
-
-- Code Quality: TypeScript standards for frontend, PEP 8 for backend
-- Modularity: Components and services must be loosely coupled and independently testable
-- Type Safety: Full TypeScript typing for all frontend code; proper type hints for Python backend
-- Responsive UI: Mobile-first design with responsive layouts
-- Error Handling: Proper HTTP status codes and user-friendly error messages
-- Performance: Page load times under 3 seconds, API response times under 500ms
-- Accessibility: WCAG 2.1 AA compliance for core functionality
-
-## Technology Stack and Tools
-
-### Frontend Layer
-- Next.js 16+ (App Router)
-- TypeScript
-- Tailwind CSS
-- Better Auth (with JWT plugin)
-
-### Backend Layer
-- Python 3.11+
-- FastAPI
-- SQLModel
-- Neon PostgreSQL
-- PyJWT
-
-### Development & Infrastructure
-- Claude Code
-- Spec-Kit Plus
-- Docker Compose
-- Git
-
-### Testing & Quality
-- Jest (frontend)
-- pytest (backend)
-- Playwright (e2e)
-
-## Development Workflow
-
-The agentic development stack follows this sequence: constitution → specifications → plans → agents/skills → implementation → testing → iteration. All development must be performed without manual coding, using Claude Code agents exclusively. Each step must be documented with Prompt History Records.
-
-1. Create detailed specifications in `specs/` directory
-2. Generate implementation plans using `/sp.plan`
-3. Execute implementation via agent tasks using `/sp.implement`
-4. Test and validate functionality
-5. Iterate based on feedback
-
-## Monorepo Structure
-
+### Service Layering
 ```
-NewFullstack/
-├── .specify/
-│   ├── memory/constitution.md
-│   ├── templates/
-│   │   ├── spec-template.md
-│   │   ├── plan-template.md
-│   │   └── tasks-template.md
-│   └── config.yaml
-├── specs/
-│   ├── features/
-│   │   ├── auth/
-│   │   └── todo/
-│   ├── api/
-│   ├── database/
-│   └── ui/
-├── frontend/
-│   ├── app/
-│   ├── components/
-│   ├── lib/
-│   └── public/
-├── backend/
-│   ├── app/
-│   ├── models/
-│   ├── api/
-│   └── tests/
-├── .claude/
-│   └── agents/
-├── .specify/
-│   └── memory/
-├── history/
-│   ├── prompts/
-│   └── adr/
-├── docker-compose.yml
-├── CLAUDE.md
-└── README.md
+Phase 3 AI Services
+├── Natural Language Processing API
+├── Intent Recognition Engine
+├── Context Analysis Service
+├── Automation Orchestrator
+├── Insights & Recommendations Engine
+└── Voice Interface Gateway
 ```
 
-## Guiding Principles
+### Data Flow
+- All AI processing is asynchronous
+- Real-time updates via WebSocket connections
+- Batch processing for analytics and insights
+- Event streaming for activity tracking
 
-- Spec-first development: All features must be fully specified before implementation
-- Security by design: User isolation and authentication implemented from the start
-- Simplicity: Start with minimal viable implementation, add complexity only when necessary
-- Maintainability: Code must be readable, documented, and easily modifiable
-- Preparation for Phase III: Architecture must support future chatbot integration
-- Full process transparency: All development steps documented for hackathon evaluation
+### Integration Points
+- Phase 2 API endpoints remain unchanged
+- New AI endpoints follow same authentication protocols
+- Webhook system for event propagation
+- Caching layer for performance optimization
 
-## Deliverables and Success Criteria
+## Quality Standards
 
-- Working full-stack application deployable via docker-compose
-- All core features functional through both responsive UI and REST API
-- Secure multi-user isolation with proper authentication
-- Clean, agent-generated code with comprehensive documentation
-- Complete specifications history in `specs/` directory
-- Demo-ready application with sample users and tasks
-- All functionality tested with unit, integration, and end-to-end tests
+### 1. Intelligence Quality
+- 95% accuracy in intent recognition
+- Sub-200ms response time for natural language queries
+- Context preservation across conversation turns
+- Fallback mechanisms for uncertain interpretations
 
-## Governance
+### 2. Reliability
+- 99.9% uptime for core AI services
+- Graceful degradation when AI services unavailable
+- Redundant processing for critical operations
+- Comprehensive error handling and recovery
 
-This constitution supersedes all other development practices for Phase II. All amendments require explicit documentation, approval, and migration planning. All pull requests and code reviews must verify compliance with these principles. All development must be traceable through Prompt History Records in the `history/prompts/` directory.
+### 3. Privacy & Security
+- Zero-knowledge architecture for sensitive data
+- End-to-end encryption for voice and text inputs
+- Compliance with data protection regulations
+- Auditable AI decision-making processes
 
-**Version**: 2.0 | **Ratified**: 2025-12-30 | **Last Amended**: 2025-12-30
+## Development Standards
+
+### 1. Model Agnosticism
+- Abstract AI model selection behind service interfaces
+- Support for multiple AI providers simultaneously
+- Pluggable model architecture for experimentation
+- Configuration-driven model selection
+
+### 2. Spec-Driven Development
+- All features defined in formal specifications first
+- Acceptance criteria must be machine-verifiable
+- Automated generation of test cases from specs
+- Continuous validation against original requirements
+
+### 3. Collaboration Protocols
+- MCP-compliant tool interfaces for agent coordination
+- Standardized communication formats
+- Distributed development workflow support
+- Version-controlled specification evolution
+
+## Operational Excellence
+
+### 1. Observability
+- Structured logging with correlation IDs
+- Distributed tracing across services
+- Real-time dashboards for AI performance metrics
+- Anomaly detection for service degradation
+
+### 2. Scalability
+- Auto-scaling based on AI workload demands
+- Load balancing for compute-intensive operations
+- Caching strategies for common queries
+- Resource optimization for cost efficiency
+
+### 3. Maintenance
+- Automated testing for all AI service integrations
+- Continuous integration with Phase 2 systems
+- Rollback capabilities for AI model updates
+- Monitoring for drift in AI model performance
+
+## Success Metrics
+
+### 1. User Experience
+- Reduction in manual todo management effort by 50%
+- Increase in task completion rates by 30%
+- User satisfaction score >4.5/5.0 for AI features
+- Time-to-completion for common tasks reduced by 40%
+
+### 2. Technical Performance
+- AI service availability >99.9%
+- Average response time <200ms
+- Accuracy in intent classification >95%
+- System resource utilization <80% under peak load
+
+### 3. Business Value
+- Measurable improvement in user engagement
+- Reduction in support tickets related to usage
+- Positive impact on user retention metrics
+- Clear ROI demonstration through productivity gains
+
+## Constraints & Boundaries
+
+### 1. Scope Limitations
+- No modifications to Phase 2 core functionality
+- AI services must be optional/opt-in
+- Maintain all existing Phase 2 user workflows
+- Preserve all existing API contracts
+
+### 2. Technical Constraints
+- Maximum 100ms additional latency for AI-enhanced operations
+- AI services must operate within existing infrastructure budget
+- All new dependencies must pass security review
+- Data residency requirements must be maintained
+
+### 3. Ethical Guidelines
+- AI suggestions must be clearly labeled as such
+- Users retain full control over their data
+- Transparent decision-making in AI recommendations
+- Bias detection and mitigation in all AI models

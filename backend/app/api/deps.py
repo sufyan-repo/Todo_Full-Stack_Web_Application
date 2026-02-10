@@ -1,8 +1,8 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel import Session
 from typing import Annotated
-from ..db import get_async_session
+from ..db import get_sync_session
 from ..core.security import verify_jwt
 
 security = HTTPBearer()
@@ -27,5 +27,5 @@ async def get_current_user(
     return user_id
 
 # Type alias for cleaner route dependencies
-SessionDep = Annotated[AsyncSession, Depends(get_async_session)]
+SessionDep = Annotated[Session, Depends(get_sync_session)]
 CurrentUserDep = Annotated[str, Depends(get_current_user)]

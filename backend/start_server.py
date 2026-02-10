@@ -13,9 +13,9 @@ async def initialize_database():
     print("Initializing database...")
     try:
         await create_db_and_tables()
-        print("✓ Database initialized successfully!")
+        print("Database initialized successfully!")
     except Exception as e:
-        print(f"✗ Database initialization failed: {e}")
+        print(f"Database initialization failed: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
@@ -33,7 +33,7 @@ def main():
     uvicorn.run(
         app,
         host="127.0.0.1",
-        port=8080,
+        port=8000,
         log_level="info",
         timeout_keep_alive=30,
         workers=1

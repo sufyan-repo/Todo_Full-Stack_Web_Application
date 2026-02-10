@@ -6,7 +6,7 @@ from sqlmodel import select
 from passlib.context import CryptContext
 from ..core.config import settings
 from ..models.user import User
-from ..api.deps import SessionDep
+from .deps import SessionDep
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -44,9 +44,10 @@ def create_token(user_id: str) -> str:
     return jwt.encode(payload, secret, algorithm="HS256")
 
 @router.post("/sign-up", response_model=AuthResponse)
-async def sign_up(request: SignUpRequest, session: SessionDep):
+def sign_up(request: SignUpRequest, session: SessionDep):
     statement = select(User).where(User.email == request.email)
-    existing_user = (await session.execute(statement)).scalars().first()
+    result = session.execute(statement)
+    existing_user = result.scalar_one_or_none()
 
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -58,8 +59,8 @@ async def sign_up(request: SignUpRequest, session: SessionDep):
             hashed_password=get_password_hash(request.password)
         )
         session.add(user)
-        await session.commit()
-        await session.refresh(user)
+        session.commit()
+        session.refresh(user)
     except Exception as exc:
         import traceback
         traceback.print_exception(type(exc), exc, exc.__traceback__)
@@ -69,18 +70,19 @@ async def sign_up(request: SignUpRequest, session: SessionDep):
     return {"token": token, "user": {"id": user.id, "email": user.email, "name": user.name}}
 
 @router.post("/sign-in", response_model=AuthResponse)
-async def sign_in(request: SignInRequest, session: SessionDep):
+def sign_in(request: SignInRequest, session: SessionDep):
     statement = select(User).where(User.email == request.email)
-    user = (await session.execute(statement)).scalars().first()
+    result = session.execute(statement)
+    user_record = result.scalar_one_or_none()
 
-    if not user or not verify_password(request.password, user.hashed_password):
+    if not user_record or not verify_password(request.password, user_record.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    token = create_token(user.id)
-    return {"token": token, "user": {"id": user.id, "email": user.email, "name": user.name}}
+    token = create_token(user_record.id)
+    return {"token": token, "user": {"id": user_record.id, "email": user_record.email, "name": user_record.name}}
 
 
 @router.post('/logout', status_code=204)
-async def logout():
+def logout():
     # Stateless JWT logout - client should remove token. Provide 204 for client convenience.
     return None

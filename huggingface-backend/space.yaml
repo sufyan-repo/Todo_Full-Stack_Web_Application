@@ -1,0 +1,6 @@
+spec:
+  task: docker
+  models: []
+  datasets: []
+  sdk: docker
+  hardware: cpu-basic

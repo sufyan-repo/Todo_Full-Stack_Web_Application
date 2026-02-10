@@ -17,18 +17,34 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
 
   useEffect(() => {
     const checkAuth = async () => {
+      // Only check authentication once on mount
       const authStatus = isAuthenticated();
       setIsAuth(authStatus);
 
       if (!authStatus) {
         // Redirect to sign-in if not authenticated
-        router.push('/auth/sign-in');
+        router.replace('/auth/sign-in'); // Using replace to avoid back button issues
       }
 
       setLoading(false);
     };
 
     checkAuth();
+
+    // Add event listener to detect storage changes (like logout from another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'token' && e.newValue === null) {
+        // Token was removed (logged out), redirect to sign in
+        router.replace('/auth/sign-in');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [router]);
 
   // Show loading state while checking authentication

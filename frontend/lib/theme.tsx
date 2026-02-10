@@ -45,9 +45,26 @@ interface ThemeProviderProps {
  * @returns Theme context provider
  */
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<'light' | 'dark'>('light');
+  const [theme, setThemeState] = useState<'light' | 'dark'>(() => {
+    // Initialize state with a default that matches what the server would render
+    if (typeof window !== 'undefined') {
+      // On client, try to determine the theme based on system preference
+      const stored = localStorage.getItem('theme') as Theme | null;
+      const system = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+      return stored === 'system' ? system : (stored || system);
+    }
+    // On server, default to light theme
+    return 'light';
+  });
+
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     // Priority 1: Check localStorage for saved preference
     const stored = localStorage.getItem('theme') as Theme | null;
 
@@ -60,6 +77,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     const resolved = stored === 'system' ? system : (stored || system);
 
     setThemeState(resolved);
+
+    // Mark as mounted to prevent server/client mismatch
+    setMounted(true);
 
     // Apply dark class to html element for Tailwind dark mode
     document.documentElement.classList.toggle('dark', resolved === 'dark');
@@ -87,13 +107,19 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     document.documentElement.classList.toggle('dark', resolved === 'dark');
   };
 
-  // Apply theme to document element when theme changes
+  // Apply theme to document element when theme changes (only after mounted)
   useEffect(() => {
+    if (!mounted) return;
     document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+  }, [theme, mounted]);
+
+  // Only provide the theme context after mounting to prevent hydration issues
+  const contextValue = mounted
+    ? { theme, setTheme }
+    : { theme: 'light', setTheme }; // Provide a default during hydration
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

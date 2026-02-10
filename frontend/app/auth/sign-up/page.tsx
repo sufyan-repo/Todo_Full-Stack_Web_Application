@@ -19,6 +19,23 @@ export default function SignUpPage() {
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
+  React.useEffect(() => {
+    // Check if user is already authenticated
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (payload.exp >= currentTime) {
+          // Token is valid, redirect to dashboard
+          router.push('/dashboard');
+        }
+      } catch (error) {
+        console.error('Error checking token expiration:', error);
+      }
+    }
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -46,9 +63,21 @@ export default function SignUpPage() {
     setLoading(true);
 
     try {
-      await signUp(email, password, name);
+      const result = await signUp(email, password, name);
+      
+      // Only store token after successful signup
+      if (result && result.token) {
+        localStorage.setItem('token', result.token);
+        if (result.user?.full_name) {
+          localStorage.setItem('user_name', result.user.full_name);
+        } else if (result.user?.name) {
+          localStorage.setItem('user_name', result.user.name);
+        } else if (name) {
+          localStorage.setItem('user_name', name);
+        }
+      }
+      
       router.push('/dashboard');
-      router.refresh();
     } catch (err: any) {
       setError(err.message || 'Sign up failed. Please try again.');
     } finally {

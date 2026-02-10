@@ -1,9 +1,9 @@
 'use client';
 
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { UserMenu } from '@/components/ui/UserMenu';
-import { cn } from '@/lib/utils';
-import Link from 'next/link';
+import { ThemeProvider } from '@/lib/theme';
+import { ToastProvider } from '@/components/ui/Toast';
+import ProtectedRoute from '@/components/auth/protected-route';
+import { ReactNode } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -11,11 +11,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background transition-colors duration-500">
-      {/* Main content */}
-      <main>
-        {children}
-      </main>
-    </div>
+    <ThemeProvider>
+      <ToastProvider>
+        <ProtectedRoute>
+          <div className="min-h-screen bg-background transition-colors duration-500">
+            {/* Main content */}
+            <main>
+              {children}
+            </main>
+          </div>
+        </ProtectedRoute>
+      </ToastProvider>
+    </ThemeProvider>
   );
 }

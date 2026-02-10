@@ -9,6 +9,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Todo API"
     BETTER_AUTH_SECRET: str = "dev-secret"
     BETTER_AUTH_URL: str = "http://localhost:3000"
-    DATABASE_URL: str
+    DATABASE_URL: str = "sqlite:///./todo_app.db"
 
 settings = Settings()

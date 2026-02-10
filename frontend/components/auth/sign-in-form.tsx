@@ -54,7 +54,6 @@ export default function SignInForm({ onSignInSuccess, className }: SignInFormPro
       } else {
         // Default behavior: redirect to dashboard
         router.push('/dashboard');
-        router.refresh(); // Refresh to update the UI
       }
     } catch (err: any) {
       setError(err.message || 'Sign in failed. Please try again.');

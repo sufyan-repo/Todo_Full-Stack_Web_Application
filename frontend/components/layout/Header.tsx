@@ -8,31 +8,11 @@ import { UserMenu } from '@/components/ui/UserMenu';
 import { cn } from '@/lib/utils';
 import { Layout, CheckCircle2 } from 'lucide-react';
 
-// Simple hook to check authentication status
-function useAuthStatus() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
-
-  React.useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem('token');
-      setIsAuthenticated(!!token);
-      setIsLoading(false);
-    };
-
-    if (typeof window !== 'undefined') {
-      checkAuth();
-      window.addEventListener('storage', checkAuth);
-      return () => window.removeEventListener('storage', checkAuth);
-    }
-  }, []);
-
-  return { isAuthenticated, isLoading };
-}
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Header() {
   const pathname = usePathname();
-  const { isAuthenticated, isLoading } = useAuthStatus();
+  const { isAuthenticated, isLoading } = useAuth();
 
   // Don't hide header on auth pages anymore
   return (
@@ -70,15 +50,17 @@ export default function Header() {
               >
                 Home
               </Link>
-              <Link
-                href="/dashboard"
-                className={cn(
-                  "px-4 py-2 text-sm font-bold rounded-xl transition-all duration-300",
-                  pathname === '/dashboard' ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                )}
-              >
-                Dashboard
-              </Link>
+              {!isLoading && isAuthenticated && (
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    "px-4 py-2 text-sm font-bold rounded-xl transition-all duration-300",
+                    pathname === '/dashboard' ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  Dashboard
+                </Link>
+              )}
             </nav>
           </div>
 
